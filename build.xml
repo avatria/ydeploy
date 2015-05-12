@@ -18,7 +18,7 @@
 
 	<description>
 	  ydeploy: A release management framework for hybris
-    </description>
+	</description>
 
 	<property file="${basedir}/core/conf/core.properties" />
 	<property file="${yd.custom.conf.dir}/ydeploy.properties" />

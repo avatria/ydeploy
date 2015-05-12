@@ -76,7 +76,6 @@
 					<var name="yreleaseid" value="${hybris_release_id}" />
 				</then>
 				<elseif>
-					<!-- TODO: make releaseid envvar configurable -->
 					<and>
 						<isset property="env.HYBRIS_RELEASE_ID" />
 						<not>
