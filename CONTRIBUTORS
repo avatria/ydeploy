@@ -1,0 +1,16 @@
+# This is the official list of people who have contributed
+# to the code of the ydeploy repository.
+#
+# The AUTHORS file lists the copyright holders; this file
+# lists people.  For example, Avatria, Inc. employees are listed here
+# but not in AUTHORS, because Avatria, Inc. holds the copyright.
+#
+
+# Names should be added to this file like so:
+#     Name <email address>	(organization)
+#
+
+# Please keep the list sorted in alphabetical order (last name, first name)
+
+Brian Ballard  		<brian.ballard@avatria.com>			(Avatria, Inc.)
+Zach McMahon 		<zach.mcmahon@avatria.com>			(Avatria, Inc.)

@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<!--
+	Copyright 2014-2015 The ydeploy Authors
+	
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+-->
+<project name="ydeploy-core-tasks">
+
+	<target name="-init">
+	</target>
+	
+	<target name="clean" depends="-init">
+		<clean-build-workspace />
+	</target>
+		
+	<target name="build" depends="-init" description="Builds the hybris platform">
+		<setup-build-workspace />
+		<ybuild targets="${yd.tasks.build.hybrisbuildtargets}" />
+	</target>
+	
+	<target name="genrelease" depends="-init" description="Generates a hybris platform release">
+		<delete includeemptydirs="true" failonerror="false">
+			<fileset dir="${yd.build.dir}/hybris/temp/hybris/hybrisServer" includes="**/*" />
+		</delete>		
+		<delete includeemptydirs="true" failonerror="false">
+			<fileset dir="${yd.tasks.genrelease.output.dir}" includes="**/*" />
+		</delete>
+		<ybuild targets="${yd.tasks.genrelease.hybrisbuildtargets}" />
+		<copy todir="${yd.build.dir}/hybris/temp/hybris/hybrisServer/ydeploy" failonerror="true">
+			<fileset dir="${yd.root.dir}">
+				<exclude name="**/temp/**" />
+			</fileset>
+		</copy>
+		<propertyfile file="${yd.build.dir}/hybris/temp/hybris/hybrisServer/ydeploy/release.id">
+			<entry key="yd.release.id" value="${yreleaseid}" />
+		</propertyfile>
+		<zip destfile="${yd.tasks.genrelease.output.dir}/${yd.tasks.genrelease.releasefileprefix}-${yreleaseid}.zip" basedir="${yd.build.dir}/hybris/temp/hybris/hybrisServer" />
+		<echo message="Release successfully generated: ${yd.tasks.genrelease.output.dir}/${yd.tasks.genrelease.releasefileprefix}-${yreleaseid}.zip " />
+	</target>
+	
+	<target name="deployrelease" depends="-init" description="Deploys a hybris platform release">
+		<setup-deploy-workspace />
+
+		<if>
+			<available file="${yd.hybris.platform.deploy.dir}/current/hybris/bin/platform/hybrisserver.bat" />
+			<then>
+				<antcall target="server-stop" />
+			</then>
+		</if>
+
+		<if>
+			<!-- if the release id has already been deployed to the server, move it to a backup location -->
+			<available file="${yd.hybris.platform.deploy.dir}/releases/${yd.release.id}" />
+			<then>
+				<tstamp />
+		        <move file="${yd.hybris.platform.deploy.dir}/releases/${yd.release.id}" tofile="${yd.hybris.platform.deploy.dir}/releases/${yd.release.id}-${DSTAMP}-${TSTAMP}"/>
+			</then>
+		</if>
+
+		<mkdir dir="${yd.hybris.platform.deploy.dir}/releases/${yd.release.id}" />
+
+		<copy todir="${yd.hybris.platform.deploy.dir}/releases/${yd.release.id}" failonerror="true">
+			<fileset dir="${yd.root.dir}/..">
+				<exclude name="**/hybrisServerREADME.txt" />
+				<exclude name="**/${yd.tasks.genrelease.releasefileprefix}*" />
+			</fileset>
+		</copy>
+		<unzip dest="${yd.hybris.platform.deploy.dir}/releases/${yd.release.id}">
+			<fileset dir="${yd.hybris.platform.deploy.dir}/releases/${yd.release.id}">
+            	<include name="**/*.zip" />
+        	</fileset>   
+		</unzip>
+		<delete includeemptydirs="true">
+			<fileset dir="${yd.hybris.platform.deploy.dir}/releases/${yd.release.id}" includes="**/*.zip" />
+		</delete>
+
+		<symboliclink dir="${yd.hybris.platform.deploy.dir}/releases/${yd.release.id}/hybris" linkname="data" target="${yd.hybris.platform.deploy.dir}${file.separator}persistent${file.separator}data" />
+		<symboliclink dir="${yd.hybris.platform.deploy.dir}/releases/${yd.release.id}/hybris" linkname="log" target="${yd.hybris.platform.deploy.dir}${file.separator}persistent${file.separator}log" />
+		<symboliclink dir="${yd.hybris.platform.deploy.dir}/releases/${yd.release.id}/hybris" linkname="temp" target="${yd.hybris.platform.deploy.dir}${file.separator}persistent${file.separator}temp" />
+		<symboliclink dir="${yd.hybris.platform.deploy.dir}" linkname="current" target="${yd.hybris.platform.deploy.dir}${file.separator}releases${file.separator}${yd.release.id}" />
+		
+		<ybuild targets="${yd.tasks.deployrelease.hybrisbuildtargets}" platformdir="${yd.hybris.platform.deploy.dir}/current/hybris/bin/platform" />
+
+		<antcall target="server-start" />
+	</target>
+	
+	<target name="server-stop" depends="-init" description="Stops the hybris server">
+		<yserver-ctrl option="stop" />
+	</target>
+
+	<target name="server-start" depends="-init" description="Starts the hybris server">
+		<yserver-ctrl option="start" />
+	</target>
+
+	<target name="server-restart" depends="-init" description="Starts the hybris server">
+		<antcall target="server-stop" />
+		<antcall target="server-start" />
+	</target>
+
+</project>

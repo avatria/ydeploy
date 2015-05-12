@@ -1,0 +1,232 @@
+<?xml version="1.0"?>
+<!--
+	Copyright 2014-2015 The ydeploy Authors
+	
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+	
+	http://www.apache.org/licenses/LICENSE-2.0
+	
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+-->
+<project name="ydeploy-core-macros">
+	
+	<macrodef name="initenv">
+		<sequential>
+			
+			<property environment="env" />
+			<property name="hybris_env" value="" />
+			<property name="hybris_server_id" value="" />
+			<property name="hybris_release_id" value="" />	
+			<var name="yenv" value="" />
+			<var name="yserverid" value="" />
+			<var name="yreleaseid" value="0" />	
+			
+			<!-- First, derive yenv and yserverid vars -->
+			<if>
+				<not>
+					<equals arg1="${hybris_env}" arg2="" />
+				</not>
+				<then>
+					<var name="yenv" value="${hybris_env}" />
+				</then>
+				<elseif>
+					<and>
+						<isset property="env.HYBRIS_ENV" />
+						<not>
+							<equals arg1="${env.HYBRIS_ENV}" arg2="" />
+						</not>
+					</and>
+					<then>
+						<var name="yenv" value="${env.HYBRIS_ENV}" />
+					</then>					
+				</elseif>
+			</if>
+			<if>
+				<not>
+					<equals arg1="${hybris_server_id}" arg2="" />
+				</not>
+				<then>
+					<var name="yserverid" value="${hybris_server_id}" />
+				</then>
+				<elseif>
+					<and>
+						<isset property="env.HYBRIS_SERVER_ID" />
+						<not>
+							<equals arg1="${env.HYBRIS_SERVER_ID}" arg2="" />
+						</not>
+					</and>
+					<then>
+						<var name="yserverid" value="${env.HYBRIS_SERVER_ID}" />
+					</then>					
+				</elseif>
+			</if>	
+			
+			<!-- Derive from -Drelease_id or ${env.HYBRIS_RELEASE_ID} -->
+			<if>
+				<not>
+					<equals arg1="_${hybris_release_id}_" arg2="__" />
+				</not>
+				<then>
+					<var name="yreleaseid" value="${hybris_release_id}" />
+				</then>
+				<elseif>
+					<!-- TODO: make releaseid envvar configurable -->
+					<and>
+						<isset property="env.HYBRIS_RELEASE_ID" />
+						<not>
+							<equals arg1="${env.HYBRIS_RELEASE_ID}" arg2="" />
+						</not>
+					</and>
+					<then>
+						<var name="yreleaseid" value="${env.HYBRIS_RELEASE_ID}" />
+					</then>					
+				</elseif>
+			</if>
+			
+			<echo message="ydeploy yenv: ${yenv}" />
+			<echo message="ydeploy yserverid: ${yserverid}" />	
+			<echo message="ydeploy yreleaseid: ${yreleaseid}" />	
+
+			<!-- Next, load server and env config properties -->
+			<for list="${yd.custom.conf.env.dir}/${yenv}/${yserverid}.properties;${yd.custom.conf.env.dir}/${yenv}/${yenv}.properties;${yd.custom.conf.env.dir}/global.properties" param="envfile" delimiter=";">
+				<sequential>
+					<if>
+						<available file="@{envfile}" />
+						<then>
+							<echo message="Loading env file: @{envfile}" level="debug" />
+							<property file="@{envfile}" />
+						</then>
+					</if>
+				</sequential>
+			</for>
+
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="clean-build-workspace">
+		<sequential>
+			<mkdir dir="${yd.build.dir}" />
+			<!-- remove any existing symbolic links that may exist so the cleanup doesn't remove linked dirs -->
+			<rmsymboliclink  dir="${yd.build.dir}/hybris/bin" linkname="custom" />
+			<rmsymboliclink  dir="${yd.build.dir}/hybris" linkname="config" />
+			<delete includeemptydirs="true" followsymlinks="false">
+				<fileset dir="${yd.build.dir}" includes="**/*" />
+			</delete>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="setup-build-workspace">
+		<sequential>
+			<if>
+				<not>
+					<and>
+						<available file="${yd.build.dir}" />
+						<available file="${yd.build.dir}/hybris" />
+						<available file="${yd.build.dir}/hybris/config" />
+						<available file="${yd.build.dir}/hybris/bin" />
+						<available file="${yd.build.dir}/hybris/bin/custom" />
+					</and>
+				</not>
+				<then>
+					<mkdir dir="${yd.build.dir}" />
+					<unzip src="${yd.hybris.platform.releases.dir}/${yd.hybris.platform.release.file}" dest="${yd.build.dir}" />	
+					<symboliclink dir="${yd.build.dir}/hybris/bin" linkname="custom" target="${yd.hybris.custom.ext.dir}" />
+					<symboliclink dir="${yd.build.dir}/hybris" linkname="config" target="${yd.hybris.custom.config.dir}" />
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="setup-deploy-workspace">
+		<sequential>
+			<mkdir dir="${yd.hybris.platform.deploy.dir}" />
+			<mkdir dir="${yd.hybris.platform.deploy.dir}/releases" />
+			<mkdir dir="${yd.hybris.platform.deploy.dir}/persistent" />
+			<mkdir dir="${yd.hybris.platform.deploy.dir}/persistent/data" />
+			<mkdir dir="${yd.hybris.platform.deploy.dir}/persistent/log" />
+			<mkdir dir="${yd.hybris.platform.deploy.dir}/persistent/temp" />
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="ybuild">
+		<attribute name="platformdir" default="${yd.build.dir}/hybris/bin/platform" />
+		<attribute name="targets" default="" />	
+		<sequential>
+			
+			<property name="hybrisEnvPropertiesFile" value="@{platformdir}/env.properties" />
+			<if>
+				<available file="${hybrisEnvPropertiesFile}" />
+				<then>
+					<script language="javascript"><![CDATA[
+						importClass(java.io.FileInputStream)
+						importClass(java.io.FileOutputStream)
+						importClass(java.util.Properties)
+						
+						var envPropertiesFile = project.getProperty("hybrisEnvPropertiesFile")
+						var ydRootDir = project.getProperty("yd.root.dir")
+						
+						var is = new FileInputStream(envPropertiesFile)
+						var props = new Properties()
+						props.load(is)
+						is.close()
+						
+						props.setProperty("YDEPLOY_DIR", ydRootDir)
+						var os = new FileOutputStream(envPropertiesFile)
+						props.store(os, null)
+						os.close()
+					]]></script>					
+				</then>
+			</if>
+			
+			<if>
+				<equals arg1="${is.windows}" arg2="true" />
+				<then>
+					<exec executable="cmd" dir="@{platformdir}" os="${os.name}" failonerror="true" failifexecutionfails="true">
+						<arg line="/c setantenv.bat &amp; ant @{targets}" />
+						<env key="HYBRIS_ENV" value="${yenv}" />
+						<env key="HYBRIS_SERVER_ID" value ="${yserverid}" />
+					</exec>
+				</then>
+				<elseif>
+					<equals arg1="${is.unix}" arg2="true" />
+					<then>
+						<exec executable="bash" dir="@{platformdir}" os="${os.name}" failonerror="true">
+							<arg line="-c &quot;source setantenv.sh &amp;&amp; ant @{targets}&quot;" />
+							<env key="HYBRIS_ENV" value="${yenv}" />
+							<env key="HYBRIS_SERVER_ID" value ="${yserverid}" />							
+						</exec>
+					</then>					
+				</elseif>
+			</if>			
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="yserver-ctrl">
+		<attribute name="option" default="start" />	
+		<sequential>
+			<if>
+				<equals arg1="${is.windows}" arg2="true" />
+				<then>
+					<exec executable="cmd" dir="${yd.hybris.platform.deploy.dir}/current/hybris/bin/platform" os="${os.name}" failonerror="true" failifexecutionfails="true">
+						<arg line="/c hybrisserver.bat @{option}" />
+					</exec>
+				</then>
+				<elseif>
+					<equals arg1="${is.unix}" arg2="true" />
+					<then>
+						<exec executable="bash" dir="${yd.hybris.platform.deploy.dir}/current/hybris/bin/platform" os="${os.name}" failonerror="true" failifexecutionfails="true">
+							<arg line="-c &quot;source hybrisserver.sh @{option}&quot;" />
+						</exec>
+					</then>					
+				</elseif>
+			</if>			
+		</sequential>
+	</macrodef>
+	
+</project>
