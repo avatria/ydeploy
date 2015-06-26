@@ -68,7 +68,7 @@ One of the key benefits of ydeploy is that it provides the ability to manage hyb
 These configuration levels should reside within the ${HYBRIS\_CONFIG\_DIR}/ydeploy/localproperties directory. An example structure is provided below but is also available in the ydeploy distribution at the ydeploy/template/hybris/config location.
 
 ```
-${HYBRIS\_CONFIG\_DIR}
+${HYBRIS_CONFIG_DIR}
 	/ydeploy
 		/localproperties
 			/global.properties
