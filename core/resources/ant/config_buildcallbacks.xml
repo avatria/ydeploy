@@ -89,11 +89,7 @@
 	<macrodef name="customizelocalproperties">
 		<sequential>
 			<replace file="${HYBRIS_CONFIG_DIR}/local.properties">
-				<!--
-				<replacefilter token="@mytoken1@" value="myvalue1" />
-				<replacefilter token="@mytoken2@" value="${myvalue2}" />
-				<replacefilter token="@mytoken3@" value="${env.MY_VALUE_3}" />
-				-->
+				<replacefilter token="@dummytoken@" value="dummyvalue" />
 			</replace>
 		</sequential>
 	</macrodef>

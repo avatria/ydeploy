@@ -19,6 +19,8 @@
 	<macrodef name="initenv">
 		<sequential>
 			
+			<echo message="Initializing ydeploy" />
+			
 			<property environment="env" />
 			<property name="hybris_env" value="" />
 			<property name="hybris_server_id" value="" />

@@ -17,9 +17,9 @@
 <project name="ydeploy" default="build" basedir=".">
 
 	<description>
-	  ydeploy: A release management framework for hybris
+	  ydeploy: A continuous build and deployment framework for hybris
 	</description>
-
+	
 	<property file="${basedir}/core/conf/core.properties" />
 	<property file="${yd.custom.conf.dir}/ydeploy.properties" />
 	<property file="${yd.root.dir}/release.id" />
