@@ -1,8 +1,8 @@
 # ydeploy
-*A continuous build and deployment framework for hybris�*
+*A continuous build and deployment framework for hybris®*
 
 ## Introduction
-ydeploy is a continuous build and deployment framework for the hybris� commerce suite.
+ydeploy is a continuous build and deployment framework for the hybris® commerce suite.
 
 ydeploy integrates with the hybris platform build framework and attempts to reduce the amount of effort necessary to implement automated build and deployment tasks for hybris software across your environment landscape. Like the hybris build framework, ydeploy is built on Apache Ant and should be easy to pickup for most Java developers.
 
@@ -39,7 +39,7 @@ However, if you dig in a bit deeper you will find that ydeploy actually provides
 #### Extending ydeploy 
   * Many other similar administrative & operational tasks can be simplified by implementing them on the ydeploy framework.
 
-### ydeploy is not...
+### What ydeploy is not...
 TODO
 
 ## Usage Example
@@ -74,7 +74,6 @@ Buildfile: /opt/build/workspace/ydeploy/build.xml
    
    BUILD SUCCESSFUL
    Total time: 49 seconds
-$
 ```
 
 That's it! ydeploy has successfully performed a full build of your hybris solution for you. 
@@ -90,6 +89,7 @@ bin config data log sampleconfigurations temp
 At this point you may be scratching your head and asking *"why not just invoke the hybris build directly from the hybris/bin/platform directory?"*
 
 Great question! To answer, lets think through all of the steps we would have had to perform to achieve the same thing without ydeploy.
+
 1. First, we would need to have the hybris software setup on the machine beforehand. In the example above, hyris was not even setup on the machine prior to running the ydeploy `build` command. ydeploy automatically set everything up
 2. After setting up hybris we would need to deploy the custom extensions and config directories from the checkout location to the proper locations within the hybris install
 3. Next, we would likely need to update the local.properties files and other configuration within the hybris/config directory to ensure the build process runs correctly on this particular machine.
@@ -112,7 +112,6 @@ Buildfile: /opt/build/workspace/ydeploy/build.xml
    [ . . . ] 
    BUILD SUCCESSFUL
    Total time: 1 minute 18 second
-$
 ```
 
 Just as with the `build` command, the `genrelease` command has setup hybris on the fly, performed the build, and generated a release package which can be used to deploy hybris to any of our environments. 
@@ -149,7 +148,6 @@ Buildfile: /opt/build/releases/ydeploy/build.xml
    [ . . . ] 
    BUILD SUCCESSFUL
    Total time: 2 minutes 25 second
-$
 ```
 
 At this point our new release has been deployed to the target server. 
@@ -228,10 +226,9 @@ TODO
 ## Integrating ydeploy into Jenkins
 TODO
 
-
 ## History
 ydeploy was originally developed by Avatria, Inc. (http://www.avatria.com) and donated to the community as an Open Source project under the Apache 2.0 License. The project continues to be maintained by the Avatria team, however, contributions and involvement by all organizations and individuals is welcomed.
 
 ## Disclaimers
-hybris� is the trademark of SAP SE in Germany and in several other countries. 
-ydeploy is an independently developed open source software solution which is maintained and supported by the ydeploy community and distributed under the Apache 2.0 License. ydeploy is not a supported hybris® or SAP SE solution.  SAP is neither an author, contributor, or sponsor to the ydeploy project.
+hybris® is the trademark of SAP SE in Germany and in several other countries. 
+ydeploy is an independently developed open source software solution which is maintained and supported by the ydeploy community and distributed under the Apache 2.0 License. ydeploy is not a supported hybrisÂ® or SAP SE solution.  SAP is neither an author, contributor, or sponsor to the ydeploy project.
