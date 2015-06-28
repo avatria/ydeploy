@@ -40,13 +40,13 @@ However, if you dig in a bit deeper you will find that ydeploy actually provides
   * Many other similar administrative & operational tasks can be simplified by implementing them on the ydeploy framework.
 
 ### ydeploy is NOT...
-ydeploy is not a comprehensive all-in-one solution intended to address all of your hybris continuous deployment needs. There are many very capable general-purpose tools available which can be used to address individual parts of your deployment strategy. ydeploy is intended to be an open tool that you can use the functional gap between these general-purpose tools and the capabilites that the hybris plaform provides out of the box. 
+ydeploy is not a comprehensive all-in-one solution intended to address all of your hybris continuous deployment needs. There are many very capable general-purpose tools available which can be used to address individual parts of your deployment strategy. ydeploy is intended to be an open tool that you can use to fill the functional gap between these general-purpose tools and the capabilites that the hybris plaform provides out of the box. 
 
 Below is a sampling of capabilities that ydpeloy does not provide natively. We leave it up to you to decide the best tool to meet these needs for your organization.
-  * Continuous Integration Server: While ydeploy orchestrates a lot of the activities that happen after kicking of a build task, we highly recommend using a CI server such as Jenkins, AntHill, or Bamboo (to name a few) to provide a simple interface for kicking off your ydeploy builds, managing build lifecycles, addressing authentication & access control needs, etc.
-  * Source Control Integration: ydeploy does not itself checkout code, tag releases, or perform any other source control related operations. Most CI servers have very strong capabilities releated to source control needs, so we recommend using these tools when available.
-  * Artifact / Release Repository: ydeploy does not itself manage or archive your build artifacts. CI server typically provides these capabilities or will have integration with such solutions. 
-  * File transfer: When performing deployments, ydeploy does not actually distribute (i.e. copy) release artifacts out to target server. Again, most CI servers typically have very strong capabilities to copy files and invokes processes on remote servers in your environment landscape.
+  * **Continuous Integration Server**: While ydeploy orchestrates a lot of the activities that happen after kicking of a build task, we highly recommend using a CI server such as Jenkins, AntHill, or Bamboo (to name a few) to provide a simple interface for kicking off your ydeploy builds, managing build lifecycles, addressing authentication & access control needs, etc.
+  * **Source Control**: ydeploy is not a source control tool and does not itself checkout code, tag releases, or perform any other source control related operations. Most CI servers have very strong capabilities releated to source control needs, so we recommend using these capabilites when available.
+  * **Artifact Repository**: ydeploy does not itself manage or archive your build artifacts. CI server typically provides these capabilities or will have integration with such solutions. 
+  * **File transfer**: When performing deployments, ydeploy does not actually distribute (i.e. copy) release artifacts out to target server. Again, most CI servers typically have very strong capabilities to copy files and invokes processes on remote servers in your environment landscape.
 
 ## Usage Example
 
