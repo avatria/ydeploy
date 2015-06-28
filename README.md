@@ -236,5 +236,5 @@ TODO
 ydeploy was originally developed by Avatria, Inc. (http://www.avatria.com) and donated to the community as an Open Source project under the Apache 2.0 License. The project continues to be maintained by the Avatria team, however, contributions and involvement by all organizations and individuals is welcomed.
 
 ## Disclaimers
-hybris® is the trademark of SAP SE in Germany and in several other countries. 
+hybris is the trademark of SAP SE in Germany and in several other countries. 
 ydeploy is an independently developed open source software solution which is maintained and supported by the ydeploy community and distributed under the Apache 2.0 License. ydeploy is not a supported hybrisÂ® or SAP SE solution.  SAP is neither an author, contributor, or sponsor to the ydeploy project.
