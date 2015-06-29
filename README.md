@@ -22,14 +22,13 @@ However, if you dig in a bit deeper you will find that ydeploy actually provides
 ### Features & Benefits
 
 #### Build & Deployment
-  * Support for building, packaging and deploying hybris software from your build server
+  * Quick and easy setup of hybris build & deployment jobs from your continuous integration server
   * Support for starting, stopping, and restarting your hybris servers from your build server
-  * Quick and easy integration of build processes with your continuous integration server
   * Ability to execute multiple build, release, and deployment jobs concurrently from a single build server
   * Support for automated deployment and installation of the hybris platform software on new servers
-  * Support for automated deployment of hybris platform software upgrades on existing servers
+  * Support for automated deployment of hybris platform upgrades on existing servers
   * Ability to utilize different hybris platform release versions across your development branches and environments
-  * Platform agnostic 
+  * Framework is platform agnostic and works across most Windows, Linux, and Unix variants
 
 #### Configuration Management
   * An optimal approach to manage and deploy your global, environment specific, and application instance specific hybris property configurations.
@@ -40,7 +39,7 @@ However, if you dig in a bit deeper you will find that ydeploy actually provides
   * Many other similar administrative & operational tasks can be simplified by implementing them on the ydeploy framework.
 
 ### ydeploy is NOT...
-ydeploy is not a comprehensive all-in-one solution intended to address all of your hybris continuous deployment needs. There are many very capable general-purpose tools available which can be used to address individual parts of your deployment strategy. ydeploy is intended to be an open tool that you can use to fill the functional gap between these general-purpose tools and the capabilites that the hybris plaform provides out of the box. 
+ydeploy is not a comprehensive all-in-one solution intended to address all of your hybris continuous deployment needs. There are many very capable general-purpose tools available which can be used to address individual parts of your deployment strategy. ydeploy is intended to be an open tool that you can use to fill the functional gap between these general-purpose tools and the limited continuous deployment capabilites that the hybris plaform provides out of the box. 
 
 Below is a sampling of capabilities that ydpeloy does not provide natively. We leave it up to you to decide the best tool to meet these needs for your organization.
   * **Continuous Integration Server**: While ydeploy orchestrates a lot of the activities that happen after kicking of a build task, we highly recommend using a CI server such as Jenkins, AntHill, or Bamboo (to name a few) to provide a simple interface for kicking off your ydeploy builds, managing build lifecycles, addressing authentication & access control needs, etc.
