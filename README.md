@@ -84,7 +84,7 @@ Buildfile: /opt/build/workspace/ydeploy/build.xml
 
 That's it! ydeploy has successfully performed a full build of your hybris solution for you. 
 
-You can see the built solution by looking into the ydeploy/temp/build directory.
+You can see the built solution by looking into the `ydeploy/temp/build` directory.
 
 ```
 $ cd ydeploy/temp/build/hybris
@@ -96,7 +96,7 @@ At this point you may be scratching your head and asking *"why not just invoke t
 
 Great question! To answer, lets think through all of the steps we would have had to perform to achieve the same thing without ydeploy.
 
-1. First, we would need to have the hybris software setup on the machine beforehand. In the example above, hyris was not even setup on the machine prior to running the ydeploy `build` command. ydeploy automatically set everything up
+1. First, we would need to have the hybris software setup on the machine beforehand. In the example above, hybris was not even setup on the machine prior to running the ydeploy `build` command. ydeploy automatically set everything up
 2. After setting up hybris we would need to deploy the custom extensions and config directories from the checkout location to the proper locations within the hybris install
 3. Next, we would likely need to update the local.properties files and other configuration within the hybris/config directory to ensure the build process runs correctly on this particular machine.
 4. Almost ready to build. But first, we need to go into the hybris/bin/platform directory and setup the environment using that `setantenv.sh` script
@@ -158,17 +158,69 @@ Buildfile: /opt/build/releases/ydeploy/build.xml
 
 At this point our new release has been deployed to the target server. 
 
-## Integrating ydeploy into your solution
-TODO
+## Setting up ydeploy
+In this section we will provide a quick walk through of how to integrate ydeploy into your hybris solution.
 
-### Downloading
-TODO
+### Downloading the release
 
-### Installing / Checking into Source Control
-TODO
+You can download a copy of the current ydeploy release using the `master` branch of the Git repository. You can either clone the repo using your Git client of choice or you can download a zip of the repo content using the link below.
 
-### Directory Structure
-TODO
+https://github.com/avatria/ydeploy/archive/master.zip
+
+### Integration into your solution
+
+Before we get started with integrating ydeploy into your hybris solution, lets do a quick review of the contents of the distribution.
+
+#### ydeploy Directory Structure
+
+Below is the basic directory structure of the ydeploy software.
+
+```
+ydeploy/
+	/core
+		/conf
+			/core.properties
+		/resources
+	/custom
+		/conf
+			/ydeploy.properties
+			/env
+		/resources
+		
+	/template
+		/hybris
+			/config
+				/buildcallbacks.xml
+				/ydeploy
+						
+```
+
+The `ydeploy/core` directory contains configuration and resources which are integral to the framework and typically should not be edited.
+
+The `ydeploy/custom` directory should contain all user specific configurations and customizations. The intent is to keep user specific customizations separate from core framework code and configuration. `ydeploy.properties` and the `env` directory will be where most of your configuration customizations will reside.
+
+The `ydeploy/template` directory contains files and sample configurations that are intended to copied in your standard hybris install structure. Currently all template files are located under your `hybris/config` directory (i.e. `${HYBRIS_CONFIG_DIR}`).
+
+#### Checking ydeploy into source control
+
+It is recommended that you add the full contents of the ydeploy distribution to your source code repository right along side your hybris customizations directory (e.g. `custom`) and your `hybris/config` directory.
+
+Additionally, you should copy the contents of the `ydeploy/template/hybris/config` into your `hybris/config` directory. This step is necessary to allow ydeploy to hook into certain behaviors of the hybris build framework.
+
+Below is an example of how your source control repo contents may look after integrating ydeploy.
+
+```
+hybris-repo
+	/config
+		/buildcallbacks.xml	[from ydeploy distribution template dir]
+		/ydeploy		[from ydeploy distribution template dir]
+		
+	/custom
+		/custext1
+		/custext2
+		[ . . . ]
+	/ydeploy			[full ydeploy distribution]
+```
 
 ### ydeploy Configuration
 TODO
@@ -184,7 +236,7 @@ One of the key benefits of ydeploy is that it provides the ability to manage hyb
 2. Environment-specific Configuration Properties
 3. Application Instance-specific Configuration Properties
 
-These configuration levels should reside within the ${HYBRIS\_CONFIG\_DIR}/ydeploy/localproperties directory. An example structure is provided below but is also available in the ydeploy distribution at the ydeploy/template/hybris/config location.
+These configuration levels should reside within the `${HYBRIS\_CONFIG\_DIR}/ydeploy/localproperties` directory. An example structure is provided below but is also available in the ydeploy distribution at the `ydeploy/template/hybris/config` location.
 
 ```
 ${HYBRIS_CONFIG_DIR}
@@ -202,7 +254,7 @@ ${HYBRIS_CONFIG_DIR}
 			[... etc ...]
 ```
  
-Whenever a hybris build is invoked, ydepoy will merge the three levels of properties files together in the order specified above to generate the effective local.properties at the ${HYBRIS\_CONFIG\_DIR}/local.properties location. When a property value is is defined at multiple levels, later levels override earlier, more global levels.
+Whenever a hybris build is invoked, ydepoy will merge the three levels of properties files together in the order specified above to generate the effective local.properties at the `${HYBRIS_CONFIG_DIR}/local.properties` location. When a property value is is defined at multiple levels, later levels override earlier, more global levels.
 
 You will find that this flexible structure allows for you to greatly reduce duplication of local.properties configurations which ultimately helps reduce maintenance and risk of errors or omissions.
 
@@ -210,10 +262,10 @@ You will find that this flexible structure allows for you to greatly reduce dupl
 global.properties refers to the properties file that contains configuration that will apply to every environment and every node in every environment unless that property is overridden at a lower level (i.e. environment or environment node). 
 
 #### \<ENV\>.properties
-\<ENV>.properties refers to a Properties file that contains the configuration specific to an entire environment.  The file must be named using the convention <ENV>/<ENV>.properties name where <ENV> is the Environment ID that is supplied to the ydeploy framework via an environment variable (${HYBRIS\_ENV\_ID}) or passed to ydeploy via a command line parameter (-Dhybris\_env\_id=\<ENV\>). This Environment ID must be the name of the folder that the Environment-specific Configuration Properties reside in and must also be the name of the file that contains the Environment-specific Configuration Properties.  e.g. Given an Environment ID of dev, the following must exist in the config directory.
+\<ENV>.properties refers to a Properties file that contains the configuration specific to an entire environment.  The file must be named using the convention <ENV>/<ENV>.properties name where <ENV> is the Environment ID that is supplied to the ydeploy framework via an environment variable (`${HYBRIS_ENV_ID}`) or passed to ydeploy via a command line parameter (`-Dhybris_env_id=<ENV>`). This Environment ID must be the name of the folder that the Environment-specific Configuration Properties reside in and must also be the name of the file that contains the Environment-specific Configuration Properties.  e.g. Given an Environment ID of dev, the following must exist in the config directory.
 
 #### \<SERVER_ID\>.properties
-\<SERVER_ID>.properties refers to a Properties file that contains the configuration instance-specific configuration for an individual hybris JVM.  The file must be named using the convention <ENV>/<SERVER_ID>.properties name where <ENV> is the Environment ID which the server belongs, and <SERVER_ID> represents the unique identifier for the hybris JVM process. These variables are supplied to the ydeploy framework via environment variables (${HYBRIS\_ENV\_ID} and ${HYBRIS\_SERVER\_ID}) or passed to ydeploy via a command line parameters (-Dhybris\_env\_id=\<ENV\>, -Dhybris\_server\_id=\<SERVER_ID\>).
+\<SERVER_ID>.properties refers to a Properties file that contains the configuration instance-specific configuration for an individual hybris JVM.  The file must be named using the convention <ENV>/<SERVER_ID>.properties name where <ENV> is the Environment ID which the server belongs, and <SERVER_ID> represents the unique identifier for the hybris JVM process. These variables are supplied to the ydeploy framework via environment variables (`${HYBRIS_ENV_ID}` and `${HYBRIS_SERVER_ID}`) or passed to ydeploy via a command line parameters (`-Dhybris_env_id=<ENV>`, `-Dhybris_server_id=<SERVER_ID>`).
 
 ### Managing Other Configurations
 
