@@ -199,7 +199,7 @@ The `ydeploy/core` directory contains configuration and resources which are inte
 
 The `ydeploy/custom` directory should contain all user specific configurations and customizations. The intent is to keep user specific customizations separate from core framework code and configuration. `ydeploy.properties` and the `env` directory will be where most of your configuration customizations will reside.
 
-The `ydeploy/template` directory contains files and sample configurations that are intended to copied in your standard hybris install structure. Currently all template files are located under your `hybris/config` directory (i.e. `${HYBRIS_CONFIG_DIR}`).
+The `ydeploy/template` directory contains files and sample configurations that are intended to copied in your standard hybris install structure. Currently all template files should be placed under your `hybris/config` directory (i.e. `${HYBRIS_CONFIG_DIR}`).
 
 #### Checking ydeploy into source control
 
@@ -223,10 +223,89 @@ hybris-repo
 ```
 
 ### ydeploy Configuration
-TODO
+Once you have copied ydeploy into your source control repository, you will need to review and edit some of the common configurations. Below are the primary configuration you should review and edit.
+
+#### ydeploy/custom/conf/ydeploy.properties
+These are the ydeploy framework configurations that likely may need editing.
+
+```
+# Where your hybris 'custom' extensions and 'config' folders are stored in source control in relation
+# to the ydeploy directory.
+yd.hybris.custom.ext.dir=${yd.root.dir}/../custom
+yd.hybris.custom.config.dir=${yd.root.dir}/../config
+
+# hybris build tasks to perform when the ydeploy 'build' target is invoked
+yd.tasks.build.hybrisbuildtargets=customize all
+
+# hybris build tasks to perform when the ydeploy 'genrelease' target is invoked
+yd.tasks.genrelease.hybrisbuildtargets=customize all production
+
+# hybris build tasks to perform when the ydeploy 'deployrelease' target is invoked on the target server
+yd.tasks.deployrelease.hybrisbuildtargets=all
+```
+
+#### ydeploy/custom/conf/env/global.properties
+This file contains your global ydeploy framework configurations. 
+
+```
+# Where hybris platform zip releases are stored
+yd.hybris.platform.releases.dir=/opt/build/hybris/releases
+
+# The hybris platform zip file to use for 'build' and 'genrelease' targets. 
+# Must exist in the ${yd.hybris.platform.releases.dir} location
+yd.hybris.platform.release.file=hybris-commerce-suite-5.4.0.1.min.zip
+
+# Location at which the 'deployrelease' and server related targets will operate.
+yd.hybris.platform.deploy.dir=/opt/hybriscs
+```
+
+The first two settings described above (`yd.hybris.platform.releases.dir`, `yd.hybris.platform.release.file`) are very important and tell ydeploy where to find the standard hybris platform release zip to use to setup hybris 'on the fly' for the build and genrelease commands.
+
+The last setting (`yd.hybris.platform.deploy.dir`) tells ydeploy where to install hybris on your server when the deploy command is executed.
+
+The configuration values set in global.properties will be used unless you choose to provide different configurations to be used at an environment or server specific level.
+
+```
+ydeploy
+	/custom
+		/conf
+			/env
+				/global.properties
+				/dev
+					/dev.properties
+					/dev01.properties
+					/dev02.properties
+				/qa
+					/qa.properties
+```
+
+When you invoke ydeploy it will determine what configurations to use based upon any environment or server specific configurations you provide. This is described more in the next section.
 
 ### Running ydeploy
-TODO
+When you invoke ydeploy, it will first look to detect any environment or server specific configuration values which you may have provided via environmental variables or passed in via command line parameters.
+  * Environmental Variables
+    * HYBRIS_ENV
+    * HYBRIS_SERVER_ID
+  * Command Line Parameters
+    * -Dhybris_env
+    * -Dhybris_server_id
+
+Typically, we recommended only using the command line parameter approach for initial testing and debugging purposes. 
+
+Below is an example of running ydeploy using the command line argument approach.
+
+```
+$ cd ydeploy
+$ ant build -Dhybris_env=dev -Dhybris_server_id=dev01
+```
+
+In this example, the effective ydeploy framework configuration will be loaded in the following order with later configuration values taking precedence.
+
+1. ydeploy/custom/conf/env/global.properties
+2. ydeploy/custom/conf/env/dev/dev.properties
+3. ydeploy/custom/conf/env/dev/dev01.properties
+
+Once you have all of the configuration layers setup properly, we recommend setting up the environmental variables across all of the build and target hybris application servers that ydeploy will run. This will allow for the ydeploy framework to infer the proper configurations to use from the environment itself such that the command line parameters can be omitted.
 
 ### Managing hybris Property Configuration
 
@@ -239,7 +318,7 @@ One of the key benefits of ydeploy is that it provides the ability to manage hyb
 These configuration levels should reside within the `${HYBRIS\_CONFIG\_DIR}/ydeploy/localproperties` directory. An example structure is provided below but is also available in the ydeploy distribution at the `ydeploy/template/hybris/config` location.
 
 ```
-${HYBRIS_CONFIG_DIR}
+/config		[ ${HYBRIS_CONFIG_DIR} ]
 	/ydeploy
 		/localproperties
 			/global.properties
