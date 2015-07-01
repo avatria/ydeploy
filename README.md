@@ -372,4 +372,4 @@ For comments, questions, or feedback please send a message to @zmcmahon-avatria.
 
 ## Disclaimers
 hybris is the trademark of SAP SE in Germany and in several other countries. 
-ydeploy is an independently developed open source software solution which is maintained and supported by the ydeploy community and distributed under the Apache 2.0 License. ydeploy is not a supported hybrisÂ® or SAP SE solution.  SAP is neither an author, contributor, or sponsor to the ydeploy project.
+ydeploy is an independently developed open source software solution which is maintained and supported by the ydeploy community and distributed under the Apache 2.0 License. ydeploy was not developed by hybris or SAP.
