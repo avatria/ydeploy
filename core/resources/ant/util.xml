@@ -31,9 +31,16 @@
 			<if>
 				<equals arg1="${is.windows}" arg2="true" />
 				<then>
+					<!-- Use pathconvert to ensure we use proper windows dir separators. -->
+					<!-- mklink can be picky if we don't. -->
+					<local name="target.osfixedpath"/>
+					<pathconvert property="target.osfixedpath">
+						<path location="@{target}" />
+						<map from="" to="" />
+					</pathconvert>					
 					<rmsymboliclink dir="@{dir}" linkname="@{linkname}" />
 					<exec dir="@{dir}" executable="cmd" os="${os.name}" failonerror="true">
-						<arg line="/c mklink /j @{linkname} &quot;@{target}&quot;" />
+						<arg line="/c mklink /j @{linkname} &quot;${target.osfixedpath}&quot;" />
 					</exec>
 				</then>
 				<elseif>
