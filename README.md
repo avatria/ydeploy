@@ -2,7 +2,7 @@
 *A continuous build and deployment framework for hybris®*
 
 ## Introduction
-ydeploy is a continuous build and deployment framework for the hybrisÂ® commerce suite.
+ydeploy is a continuous build and deployment framework for the hybris commerce suite.
 
 ydeploy integrates with the hybris platform build framework and attempts to reduce the amount of effort necessary to implement automated build and deployment tasks for hybris software across your environment landscape. Like the hybris build framework, ydeploy is built on Apache Ant and should be easy to pickup for most Java developers.
 
