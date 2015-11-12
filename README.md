@@ -1,5 +1,5 @@
 # ydeploy
-*A continuous build and deployment framework for hybris®*
+*A hybrisÂ® build and deployment framework*
 
 ## Introduction
 ydeploy is a continuous build and deployment framework for the hybris commerce suite.
