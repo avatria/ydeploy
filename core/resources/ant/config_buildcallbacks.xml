@@ -102,6 +102,7 @@
 					<not>
 						<available file="${HYBRIS_CONFIG_DIR}/licence/hybrislicence.jar" />
 					</not>
+					<available file="${HYBRIS_CONFIG_DIR}/ydeploy/license/hybrislicence.jar" />
 				</and>
 				<then>
 					<mkdir dir="${HYBRIS_CONFIG_DIR}/licence" />

@@ -30,21 +30,33 @@
 	
 	<target name="genrelease" depends="-init" description="Generates a hybris platform release">
 		<delete includeemptydirs="true" failonerror="false">
-			<fileset dir="${yd.build.dir}/hybris/temp/hybris/hybrisServer" includes="**/*" />
+			<fileset dir="${yd.build.dir}/hybris/temp/hybris/hybrisServer" />
+			<fileset dir="${yd.build.dir}/hybris/temp/hybrisServer" />
 		</delete>		
 		<delete includeemptydirs="true" failonerror="false">
 			<fileset dir="${yd.tasks.genrelease.output.dir}" includes="**/*" />
 		</delete>
 		<ybuild targets="${yd.tasks.genrelease.hybrisbuildtargets}" />
-		<copy todir="${yd.build.dir}/hybris/temp/hybris/hybrisServer/ydeploy" failonerror="true">
+		<if>
+			<!-- Detect location of zip files -->
+			<!-- Earlier versions of hybris used a different location for the packaged zip files -->
+			<available file="${yd.build.dir}/hybris/temp/hybris/hybrisServer" type="dir" />
+			<then>
+				<var name="hybrisServerDir" value="${yd.build.dir}/hybris/temp/hybris/hybrisServer" />
+			</then>
+			<else>
+				<var name="hybrisServerDir" value="${yd.build.dir}/hybris/temp/hybrisServer" />
+			</else>
+		</if>
+		<copy todir="${hybrisServerDir}/ydeploy" failonerror="true">
 			<fileset dir="${yd.root.dir}">
 				<exclude name="**/temp/**" />
 			</fileset>
 		</copy>
-		<propertyfile file="${yd.build.dir}/hybris/temp/hybris/hybrisServer/ydeploy/release.id">
+		<propertyfile file="${hybrisServerDir}/ydeploy/release.id">
 			<entry key="yd.release.id" value="${yreleaseid}" />
 		</propertyfile>
-		<zip destfile="${yd.tasks.genrelease.output.dir}/${yd.tasks.genrelease.releasefileprefix}-${yreleaseid}.zip" basedir="${yd.build.dir}/hybris/temp/hybris/hybrisServer" />
+		<zip destfile="${yd.tasks.genrelease.output.dir}/${yd.tasks.genrelease.releasefileprefix}-${yreleaseid}.zip" basedir="${hybrisServerDir}" />
 		<echo message="Release successfully generated: ${yd.tasks.genrelease.output.dir}/${yd.tasks.genrelease.releasefileprefix}-${yreleaseid}.zip " />
 	</target>
 	

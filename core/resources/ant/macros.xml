@@ -165,6 +165,15 @@
 				<available file="${hybrisEnvPropertiesFile}" />
 				<then>
 					<script language="javascript"><![CDATA[
+						// For JDK 1.8 and greater we need to load compatability libraries
+						// to be able to use the importClass( ) features available in JDK 6 and 7.
+						// This will throw an exception on JDK 7 or before, but we can
+						// ignore since these features are standard.
+						try {
+						    load("nashorn:mozilla_compat.js");
+						} catch (e) {
+						   // ignore the exception since we are likely already running Rhino
+						}						
 						importClass(java.io.FileInputStream)
 						importClass(java.io.FileOutputStream)
 						importClass(java.util.Properties)
