@@ -17,6 +17,6 @@
 <project name="config_buildcallbacks">
 
 	<!-- Import hybris build customizations from ydeploy location -->
-	<import file="${loc.YDEPLOY_DIR}/core/resources/ant/config_buildcallbacks.xml" />
+	<import file="${loc.YDEPLOY_DIR}/core/resources/ant/config_buildcallbacks.xml" optional="true" />
 
 </project>
