@@ -73,12 +73,17 @@
 			<concat destfile="${mergedServerFile}" overwrite="true"
 				fixlastline="yes">
 				<fileset
-					file="${HYBRIS_CONFIG_DIR}/ydeploy/localproperties/${yenv}/${yserverid}.properties" />
+					file="${HYBRIS_CONFIG_DIR}/ydeploy/localproperties/global.properties" />
 				<fileset
 					file="${HYBRIS_CONFIG_DIR}/ydeploy/localproperties/${yenv}/${yenv}.properties" />
 				<fileset
-					file="${HYBRIS_CONFIG_DIR}/ydeploy/localproperties/global.properties" />
+					file="${HYBRIS_CONFIG_DIR}/ydeploy/localproperties/${yenv}/${yserverid}.properties" />
 			</concat>
+			<!-- 
+				The propertyfile task removes duplicate property definitions from the merged file 
+				and uses the last definition when multiple exist 
+			-->
+			<propertyfile file="${mergedServerFile}" />
 			<copy file="${mergedServerFile}" tofile="${HYBRIS_CONFIG_DIR}/local.properties" />
 			<customizelocalproperties />
 			<echo message="deploylocalproperties complete" />
