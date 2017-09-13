@@ -200,7 +200,7 @@
 					<exec executable="cmd" dir="@{platformdir}" os="${os.name}" failonerror="true" failifexecutionfails="true">
 						<arg line="/c setantenv.bat &amp; ant @{targets}" />
 						<env key="HYBRIS_ENV" value="${yenv}" />
-						<env key="HYBRIS_SERVER_ID" value ="${yserverid}" />
+						<env key="HYBRIS_SERVER_ID" value="${yserverid}" />
 					</exec>
 				</then>
 				<elseif>
@@ -209,7 +209,7 @@
 						<exec executable="bash" dir="@{platformdir}" os="${os.name}" failonerror="true">
 							<arg line="-c &quot;source setantenv.sh &amp;&amp; ant @{targets}&quot;" />
 							<env key="HYBRIS_ENV" value="${yenv}" />
-							<env key="HYBRIS_SERVER_ID" value ="${yserverid}" />							
+							<env key="HYBRIS_SERVER_ID" value="${yserverid}" />							
 						</exec>
 					</then>					
 				</elseif>
