@@ -114,7 +114,6 @@
 		<sequential>
 			<mkdir dir="${yd.build.dir}" />
 			<!-- remove any existing symbolic links that may exist so the cleanup doesn't remove linked dirs -->
-			<rmsymboliclink  dir="${yd.build.dir}/hybris/bin" linkname="custom" />
 			<rmsymboliclink  dir="${yd.build.dir}/hybris" linkname="config" />
 			<delete includeemptydirs="true" followsymlinks="false">
 				<fileset dir="${yd.build.dir}" includes="**/*" />
@@ -131,16 +130,26 @@
 						<available file="${yd.build.dir}/hybris" />
 						<available file="${yd.build.dir}/hybris/config" />
 						<available file="${yd.build.dir}/hybris/bin" />
-						<available file="${yd.build.dir}/hybris/bin/custom" />
 					</and>
 				</not>
 				<then>
 					<mkdir dir="${yd.build.dir}" />
 					<unzip src="${yd.hybris.platform.releases.dir}/${yd.hybris.platform.release.file}" dest="${yd.build.dir}" />	
-					<symboliclink dir="${yd.build.dir}/hybris/bin" linkname="custom" target="${yd.hybris.custom.ext.dir}" />
 					<symboliclink dir="${yd.build.dir}/hybris" linkname="config" target="${yd.hybris.custom.config.dir}" />
 				</then>
 			</if>
+
+			<!-- 
+				Copy custom extensions into build install. 
+				As of 6.4, using symbolic link is not working on linux due to the way the production task is generating the localextensions.xml.
+				See production.generate.extensionsxml in advanced.properties.
+			-->
+			<mkdir dir="${yd.build.dir}/hybris/bin/custom" />
+			<echo message="Copying custom extension dir [${yd.hybris.custom.ext.dir}] to build location [${yd.build.dir}/hybris/bin/custom]" />
+			<copy todir="${yd.build.dir}/hybris/bin/custom" failonerror="true">
+				<fileset dir="${yd.hybris.custom.ext.dir}" />
+			</copy>
+
 		</sequential>
 	</macrodef>
 	
