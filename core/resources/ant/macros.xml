@@ -141,7 +141,8 @@
 
 			<!-- 
 				Copy custom extensions into build install. 
-				As of 6.4, using symbolic link is not working on linux due to the way the production task is generating the localextensions.xml.
+				As of 6.3, using symbolic links for referencing custom exension dir was not working on 
+				linux due to the way the hybris 'production' target is generating the localextensions.xml.
 				See production.generate.extensionsxml in advanced.properties.
 			-->
 			<mkdir dir="${yd.build.dir}/hybris/bin/custom" />
